@@ -233,7 +233,7 @@
   }
   .paso-txt { font-size: 18px; line-height: 1.5; }
 
-  /* Tarjetas de imagen ilustrativa por paso (diferenciables + tamaño ajustable) */
+  /* Tarjetas de imagen ilustrativa por paso */
   .paso-img-card {
     margin-top: 10px;
     display: inline-block;
@@ -465,7 +465,6 @@
       <div class="celeb-icon">🎉</div>
       <div class="celeb-titulo">¡Muy bien!</div>
       <div class="celeb-sub">Completó esta lección. ¡Siga así!</div>
-      
       <div id="celebracion-botones"></div>
     </div>
   </div>
@@ -488,7 +487,7 @@ const modInfo = {
   4: { nombre: "Protéjase del fraude", icono: "🛡️", color: "var(--rojo)", total: 5 },
 };
 
-// Fondo claro de las tarjetas de imagen por módulo (coherente con el color del módulo)
+// Fondo claro de las tarjetas de imagen por módulo
 const imgFondoPorModulo = {
   1: "#EBF4FB",
   2: "var(--verde-cl)",
@@ -497,14 +496,13 @@ const imgFondoPorModulo = {
 };
 
 // ---- CONTENIDO DE LECCIONES ----
-// Configuración lista: Agregada la ruta exacta "imagenes/1-1.jpg" en el paso 1 de la Lección 1-1.
 const lecciones = {
   "1-1": {
     titulo: "Enviar un audio de voz en WhatsApp",
     icono: "🎙️",
     paraq: "¿Le da pereza escribir? Con los audios de WhatsApp puede hablarle a su familiar como si estuviera al lado. Es muy fácil y no tiene que tocar muchas cosas.",
     pasos: [
-      { txt: "Abra WhatsApp y entre al chat de la persona a quien le quiere hablar.", img: { src: "imagenes/1-1.jpg", emoji: "💬", texto: "Chat abierto en WhatsApp" } },
+      { txt: "Abra WhatsApp y entre al chat de la persona a quien le quiere hablar.", img: { emoji: "💬", texto: "Chat abierto en WhatsApp" } },
       { txt: "Busque el ícono del micrófono 🎤 que está a la derecha, donde normalmente escribe." },
       { txt: "Toque y <strong>mantenga presionado</strong> el micrófono mientras habla. Cuando termine, suelte el dedo." },
       { txt: "El audio se envía solo. La persona lo recibirá y podrá escucharlo cuando quiera." },
@@ -789,7 +787,11 @@ function irLeccion(mod, num, ev) {
 
     <div class="bloque">
       <div class="bloque-titulo">📋 Pasos a seguir</div>
-      ${data.pasos.map((p, i) => `
+      ${data.pasos.map((p, i) => {
+        // Carga la ruta inteligente para buscar en tu carpeta "imagenes/1-1.jpg"
+        const rutaImg = p.img?.src ? p.img.src : `imagenes/${mod}-${num}.jpg`;
+        
+        return `
         <div class="paso">
           <div class="paso-num" style="background:${info.color}">${i+1}</div>
           <div style="width: 100%;">
@@ -797,11 +799,9 @@ function irLeccion(mod, num, ev) {
             ${p.img ? `
             <div class="paso-img-card" style="border-color:${info.color}; background:${imgFondoPorModulo[mod]}">
               <div class="paso-img-visual" id="img-visual-${mod}-${num}-${i}" style="width:220px;">
-                ${p.img.src ? `
-                  <img src="${p.img.src}" alt="${p.img.texto}">
-                ` : `
-                  <div class="img-emoji">${p.img.emoji}</div>
-                `}
+                <img src="${rutaImg}" alt="${p.img.texto}" 
+                     onerror="this.style.display='none'; document.getElementById('emoji-${mod}-${num}-${i}').style.display='block';">
+                <div id="emoji-${mod}-${num}-${i}" class="img-emoji" style="display:none; font-size:54px;">${p.img.emoji}</div>
                 <div class="img-texto">${p.img.texto}</div>
               </div>
               <div class="paso-img-controls">
@@ -814,7 +814,7 @@ function irLeccion(mod, num, ev) {
             </div>` : ''}
           </div>
         </div>
-      `).join('')}
+      `}).join('')}
     </div>
   `;
 
@@ -822,6 +822,27 @@ function irLeccion(mod, num, ev) {
     const cls = data.alerta.tipo === 'verde' ? 'alerta-verde' : data.alerta.tipo === 'rojo' ? 'alerta-rojo' : 'alerta-azul';
     const icono = data.alerta.tipo === 'verde' ? '✅' : data.alerta.tipo === 'rojo' ? '🚨' : 'ℹ️';
     html += `<div class="bloque"><div class="alerta ${cls}"><div class="alerta-icon">${icono}</div><div>${data.alerta.txt}</div></div></div>`;
+  }
+
+  // TARJETA INTEGRADA: Detector de Estafas Inteligente (para Módulo 1 Lección 4, y todo el Módulo 4)
+  if (mod === 4 || (mod === 1 && num === 4)) {
+    html += `
+      <div class="bloque" style="border: 3px solid var(--naranja); background: #FFF9F3; margin-bottom: 18px;">
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <div style="font-size: 34px; line-height: 1;">🔍</div>
+          <div>
+            <strong style="color: var(--naranja); font-size: 20px; display: block; margin-bottom: 6px;">¿Tiene un mensaje o captura sospechosa ahora mismo?</strong>
+            <p style="font-size: 17px; margin-bottom: 14px; color: #444; line-height: 1.5;">
+              Si le llegó un mensaje raro a su celular o WhatsApp y tiene miedo de que sea un engaño, puede usar la página gratuita <strong>Bitdefender Scamio</strong>. Allí puede copiar y pegar el texto, o <strong>subir una foto de su pantalla (captura)</strong>, y un asistente inteligente le dirá gratis y al instante si es seguro o una estafa.
+            </p>
+            <a href="https://www.bitdefender.com/es-es/consumer/scamio" target="_blank" rel="noopener"
+               style="display: inline-block; background: var(--naranja); color: white; text-decoration: none; padding: 12px 22px; border-radius: 12px; font-weight: 800; font-size: 17px; transition: 0.2s; box-shadow: 0 4px 10px rgba(224,124,48,0.25); text-align: center;">
+              👉 Tocar aquí para revisar el mensaje en Scamio
+            </a>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   if (data.ejercicio) {
