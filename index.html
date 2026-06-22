@@ -232,15 +232,6 @@
     font-weight: 800; font-size: 16px; flex-shrink: 0; margin-top: 2px;
   }
   .paso-txt { font-size: 18px; line-height: 1.5; }
-  .paso-img {
-    background: #F0F5FB;
-    border: 2px dashed #B0C8E0;
-    border-radius: 12px;
-    padding: 20px; text-align: center;
-    color: #5577AA; font-size: 15px;
-    margin-top: 8px; font-style: italic;
-  }
-  .paso-img span { font-size: 32px; display: block; margin-bottom: 6px; }
 
   /* Tarjetas de imagen ilustrativa por paso (diferenciables + tamaño ajustable) */
   .paso-img-card {
@@ -250,13 +241,11 @@
     border-radius: 14px;
     overflow: hidden;
     border: 2px solid #B0C8E0;
-    background: #F0F5FB;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
   .paso-img-visual {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    width: 220px; min-height: 150px;
     padding: 18px 14px;
     transition: width 0.15s ease;
   }
@@ -266,7 +255,12 @@
     transition: font-size 0.15s ease;
   }
   .paso-img-visual img {
-    transition: all 0.15s ease;
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    object-fit: contain;
   }
   .paso-img-visual .img-texto {
     font-size: 14px; font-weight: 700;
@@ -275,7 +269,7 @@
   }
   .paso-img-controls {
     display: flex; align-items: center; gap: 8px;
-    background: rgba(255,255,255,0.65);
+    background: rgba(255,255,255,0.85);
     padding: 8px 12px;
     border-top: 1px dashed #B0C8E0;
   }
@@ -503,15 +497,14 @@ const imgFondoPorModulo = {
 };
 
 // ---- CONTENIDO DE LECCIONES ----
-// NOTA: Para usar imágenes reales en los pasos, agregue la propiedad 'src' indicando la ruta del archivo.
-// Ejemplo: src: "imagenes/audio.jpg" o una URL web. Si 'src' no existe, usará 'emoji' como respaldo.
+// Configuración lista: Agregada la ruta exacta "imagenes/1-1.jpg" en el paso 1 de la Lección 1-1.
 const lecciones = {
   "1-1": {
     titulo: "Enviar un audio de voz en WhatsApp",
     icono: "🎙️",
     paraq: "¿Le da pereza escribir? Con los audios de WhatsApp puede hablarle a su familiar como si estuviera al lado. Es muy fácil y no tiene que tocar muchas cosas.",
     pasos: [
-      { txt: "Abra WhatsApp y entre al chat de la persona a quien le quiere hablar.", img: { src: "imagenes/chat-whatsapp.png", emoji: "💬", texto: "Chat abierto en WhatsApp" } },
+      { txt: "Abra WhatsApp y entre al chat de la persona a quien le quiere hablar.", img: { src: "imagenes/1-1.jpg", emoji: "💬", texto: "Chat abierto en WhatsApp" } },
       { txt: "Busque el ícono del micrófono 🎤 que está a la derecha, donde normalmente escribe." },
       { txt: "Toque y <strong>mantenga presionado</strong> el micrófono mientras habla. Cuando termine, suelte el dedo." },
       { txt: "El audio se envía solo. La persona lo recibirá y podrá escucharlo cuando quiera." },
@@ -782,7 +775,6 @@ function irLeccion(mod, num, ev) {
   document.getElementById('vista-leccion').classList.add('activa');
   document.getElementById('celebracion').classList.remove('activa');
   
-  // SOLUCIÓN AL BLOQUEO DE PANTALLA: Forzamos a que el contenedor sea visible
   document.getElementById('leccion-contenido').style.display = 'block';
 
   let html = `
@@ -800,15 +792,15 @@ function irLeccion(mod, num, ev) {
       ${data.pasos.map((p, i) => `
         <div class="paso">
           <div class="paso-num" style="background:${info.color}">${i+1}</div>
-          <div>
+          <div style="width: 100%;">
             <div class="paso-txt">${p.txt}</div>
             ${p.img ? `
-            <div class="paso-img-card" style="border-color:${info.color};background:${imgFondoPorModulo[mod]}">
+            <div class="paso-img-card" style="border-color:${info.color}; background:${imgFondoPorModulo[mod]}">
               <div class="paso-img-visual" id="img-visual-${mod}-${num}-${i}" style="width:220px;">
                 ${p.img.src ? `
-                  <img src="${p.img.src}" alt="${p.img.texto}" style="width:100%; height:auto; display:block; border-radius:8px; margin-bottom:8px;">
+                  <img src="${p.img.src}" alt="${p.img.texto}">
                 ` : `
-                  <div class="img-emoji" style="font-size:54px;">${p.img.emoji}</div>
+                  <div class="img-emoji">${p.img.emoji}</div>
                 `}
                 <div class="img-texto">${p.img.texto}</div>
               </div>
@@ -848,19 +840,14 @@ function irLeccion(mod, num, ev) {
 }
 
 function marcarCompleta(mod, num) {
-  // 1. Guardar la lección como hecha
   completadas[`${mod}-${num}`] = true;
-  
-  // 2. Ocultar el contenido actual de la lección
   document.getElementById('leccion-contenido').style.display = 'none';
   
-  // 3. Evaluar navegación inteligente
   const totalLecciones = modInfo[mod].total;
   const contenedorBotones = document.getElementById('celebracion-botones');
   let htmlBotones = '';
   
   if (num < totalLecciones) {
-    // Aún quedan clases en este módulo
     const siguienteLeccion = num + 1;
     htmlBotones += `
       <button class="btn-logre" style="background:var(--verde); margin-bottom: 12px;" 
@@ -869,7 +856,6 @@ function marcarCompleta(mod, num) {
       </button>
     `;
   } else {
-    // Era la última lección del módulo actual. Evaluamos si hay un módulo siguiente
     const siguienteModulo = mod + 1;
     if (modInfo[siguienteModulo]) {
       htmlBotones += `
@@ -879,7 +865,6 @@ function marcarCompleta(mod, num) {
         </button>
       `;
     } else {
-      // Llegó al final de absolutamente todo el curso (Fin del módulo 4)
       htmlBotones += `
         <div style="font-weight: 800; color: var(--verde); margin: 15px 0; font-size: 21px;">
           🏆 ¡Felicitaciones! Ha completado satisfactoriamente todos los módulos de SeniorNet.
@@ -888,14 +873,12 @@ function marcarCompleta(mod, num) {
     }
   }
   
-  // Botón estándar para regresar al inicio siempre disponible
   htmlBotones += `
     <button class="btn-logre" style="background:var(--azul)" onclick="irInicio()">
       🏠 Ver más lecciones
     </button>
   `;
   
-  // 4. Inyectar los botones y activar la pantalla de celebración
   contenedorBotones.innerHTML = htmlBotones;
   document.getElementById('celebracion').classList.add('activa');
 }
@@ -924,20 +907,22 @@ function actualizarProgresos() {
     if (bar) bar.style.width = pct + '%';
     if (txt) txt.textContent = `${hecho} de ${total} lecciones completadas`;
   });
-  // Re-render leccion-contenido si volvemos
   document.getElementById('leccion-contenido').style.display = 'block';
 }
 
-// ---- AJUSTE DE TAMAÑO DE LAS IMÁGENES DE CADA PASO ----
+// ---- AJUSTE DINÁMICO DE TAMAÑO ----
 function setTamanoImg(id, valor) {
   const el = document.getElementById('img-visual-' + id);
   if (!el) return;
   const px = Math.max(140, Math.min(420, parseInt(valor, 10) || 220));
   el.style.width = px + 'px';
+  
   const emoji = el.querySelector('.img-emoji');
   if (emoji) emoji.style.fontSize = Math.round(px * 0.24) + 'px';
+  
   const lbl = document.getElementById('img-size-label-' + id);
   if (lbl) lbl.textContent = px + 'px';
+  
   const wrap = el.closest('.paso-img-card');
   const slider = wrap ? wrap.querySelector('.img-size-slider') : null;
   if (slider) slider.value = px;
