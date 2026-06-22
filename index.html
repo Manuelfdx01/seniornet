@@ -242,6 +242,55 @@
   }
   .paso-img span { font-size: 32px; display: block; margin-bottom: 6px; }
 
+  /* Tarjetas de imagen ilustrativa por paso (diferenciables + tamaño ajustable) */
+  .paso-img-card {
+    margin-top: 10px;
+    display: inline-block;
+    max-width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 2px solid #B0C8E0;
+    background: #F0F5FB;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .paso-img-visual {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    width: 220px; min-height: 150px;
+    padding: 18px 14px;
+    transition: width 0.15s ease;
+  }
+  .paso-img-visual .img-emoji {
+    font-size: 54px; line-height: 1;
+    margin-bottom: 8px;
+    transition: font-size 0.15s ease;
+  }
+  .paso-img-visual .img-texto {
+    font-size: 14px; font-weight: 700;
+    color: #3A5A82; text-align: center;
+    font-style: normal; line-height: 1.3;
+  }
+  .paso-img-controls {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.65);
+    padding: 8px 12px;
+    border-top: 1px dashed #B0C8E0;
+  }
+  .img-size-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: none; background: var(--azul-cl); color: white;
+    font-weight: 900; font-size: 18px; cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.15s;
+  }
+  .img-size-btn:hover { filter: brightness(1.12); }
+  .img-size-btn:active { transform: scale(0.92); }
+  .img-size-slider { flex: 1; min-width: 90px; accent-color: var(--azul-cl); cursor: pointer; }
+  .img-size-label {
+    font-size: 13px; color: #5577AA; font-weight: 700;
+    min-width: 48px; text-align: right; flex-shrink: 0;
+  }
+
   .alerta {
     border-radius: 12px;
     padding: 16px 20px;
@@ -448,6 +497,14 @@ const modInfo = {
   4: { nombre: "Protéjase del fraude", icono: "🛡️", color: "var(--rojo)", total: 5 },
 };
 
+// Fondo claro de las tarjetas de imagen por módulo (coherente con el color del módulo)
+const imgFondoPorModulo = {
+  1: "#EBF4FB",
+  2: "var(--verde-cl)",
+  3: "var(--narj-cl)",
+  4: "var(--rojo-cl)",
+};
+
 // ---- CONTENIDO DE LECCIONES ----
 const lecciones = {
   "1-1": {
@@ -455,7 +512,7 @@ const lecciones = {
     icono: "🎙️",
     paraq: "¿Le da pereza escribir? Con los audios de WhatsApp puede hablarle a su familiar como si estuviera al lado. Es muy fácil y no tiene que tocar muchas cosas.",
     pasos: [
-      { txt: "Abra WhatsApp y entre al chat de la persona a quien le quiere hablar.", img: true },
+      { txt: "Abra WhatsApp y entre al chat de la persona a quien le quiere hablar.", img: { emoji: "💬", texto: "Chat abierto en WhatsApp" } },
       { txt: "Busque el ícono del micrófono 🎤 que está a la derecha, donde normalmente escribe." },
       { txt: "Toque y <strong>mantenga presionado</strong> el micrófono mientras habla. Cuando termine, suelte el dedo." },
       { txt: "El audio se envía solo. La persona lo recibirá y podrá escucharlo cuando quiera." },
@@ -468,7 +525,7 @@ const lecciones = {
     icono: "📹",
     paraq: "Con una videollamada puede ver la cara de sus hijos, nietos o amigos aunque estén lejos. Es gratis y solo necesita WiFi.",
     pasos: [
-      { txt: "Abra WhatsApp y entre al chat de la persona a quien quiere llamar.", img: true },
+      { txt: "Abra WhatsApp y entre al chat de la persona a quien quiere llamar.", img: { emoji: "📹", texto: "Chat listo para videollamada" } },
       { txt: "Arriba a la derecha verá un ícono de cámara 📹. Tóquelo." },
       { txt: "Verá una pantalla que dice '¿Videollamada de WhatsApp?'. Toque <strong>Videollamada</strong>." },
       { txt: "El celular empieza a llamar. Espere a que su familiar conteste. ¡Ya están hablando cara a cara!" },
@@ -481,7 +538,7 @@ const lecciones = {
     icono: "👨‍👩‍👧‍👦",
     paraq: "Un grupo familiar le permite escribir o enviar fotos a toda su familia al mismo tiempo, sin tener que hacerlo uno por uno.",
     pasos: [
-      { txt: "Abra WhatsApp. Toque el ícono de lápiz ✏️ o el botón de nuevo chat (abajo a la derecha).", img: true },
+      { txt: "Abra WhatsApp. Toque el ícono de lápiz ✏️ o el botón de nuevo chat (abajo a la derecha).", img: { emoji: "✏️", texto: "Botón de nuevo chat / grupo" } },
       { txt: "Seleccione <strong>Nuevo grupo</strong>." },
       { txt: "Busque y toque el nombre de cada familiar que quiere añadir. Puede añadir a varios." },
       { txt: "Toque la flecha → para continuar." },
@@ -510,7 +567,7 @@ const lecciones = {
     icono: "🔒",
     paraq: "Usted puede controlar quién ve su foto de perfil y su estado. Es bueno que solo sus contactos puedan verlos.",
     pasos: [
-      { txt: "Abra WhatsApp. Toque los tres puntitos ⋮ arriba a la derecha y seleccione <strong>Configuración</strong>.", img: true },
+      { txt: "Abra WhatsApp. Toque los tres puntitos ⋮ arriba a la derecha y seleccione <strong>Configuración</strong>.", img: { emoji: "⚙️", texto: "Menú de Configuración de WhatsApp" } },
       { txt: "Toque <strong>Privacidad</strong>." },
       { txt: "En <em>Foto de perfil</em>, seleccione <strong>Mis contactos</strong>. Así solo quienes conoce verán su foto." },
       { txt: "En <em>Visto por última vez</em>, también seleccione <strong>Mis contactos</strong>." },
@@ -525,7 +582,7 @@ const lecciones = {
     icono: "📍",
     paraq: "Google Maps es como tener un mapa del mundo en el bolsillo. Puede buscar cualquier lugar y saber cómo llegar desde donde está.",
     pasos: [
-      { txt: "Abra la aplicación Google Maps (el ícono rojo con una bolita).", img: true },
+      { txt: "Abra la aplicación Google Maps (el ícono rojo con una bolita).", img: { emoji: "📍", texto: "Pantalla principal de Google Maps" } },
       { txt: "Toque la barra de búsqueda arriba y escriba el lugar que busca. Por ejemplo: <em>Clínica del Country Bogotá</em>." },
       { txt: "Toque el resultado que aparece. Verá el lugar marcado en el mapa con una señal roja 📍." },
       { txt: "Toque el botón azul <strong>Cómo llegar</strong>." },
@@ -539,7 +596,7 @@ const lecciones = {
     icono: "🚌",
     paraq: "Google Maps no solo muestra el mapa. También le dice exactamente en qué parada subir, qué número de bus tomar y dónde bajar.",
     pasos: [
-      { txt: "Busque su destino en Maps y toque <strong>Cómo llegar</strong>.", img: true },
+      { txt: "Busque su destino en Maps y toque <strong>Cómo llegar</strong>.", img: { emoji: "🧭", texto: "Ruta y opciones de transporte" } },
       { txt: "Asegúrese de seleccionar el ícono de transporte público 🚌 (no el carro ni la bicicleta)." },
       { txt: "Maps le mostrará una o varias opciones de ruta. Cada una dice cuánto tarda y qué buses usar." },
       { txt: "Toque la opción que más le convenga. Verá paso a paso: 'Camine 3 min hasta la parada X, tome el bus Y, baje en la parada Z'." },
@@ -553,7 +610,7 @@ const lecciones = {
     icono: "📲",
     paraq: "¿Sale solo y su familia quiere saber que está bien? Puede compartir su ubicación en tiempo real por WhatsApp para que siempre sepan dónde está.",
     pasos: [
-      { txt: "Abra WhatsApp y entre al chat del familiar con quien quiere compartir su ubicación.", img: true },
+      { txt: "Abra WhatsApp y entre al chat del familiar con quien quiere compartir su ubicación.", img: { emoji: "📲", texto: "Compartir ubicación en WhatsApp" } },
       { txt: "Toque el ícono de clip 📎 (adjuntar) que está al lado de donde escribe." },
       { txt: "Seleccione <strong>Ubicación</strong>." },
       { txt: "Toque <strong>Compartir ubicación en tiempo real</strong>." },
@@ -568,7 +625,7 @@ const lecciones = {
     icono: "🚍",
     paraq: "TransMiSITP es la app oficial del SITP de Bogotá. Le dice los horarios de los buses, las paradas cercanas y qué rutas pasan por donde está.",
     pasos: [
-      { txt: "Abra la app TransMiSITP. Si no la tiene, pídale al tutor que le ayude a instalarla. Es gratuita.", img: true },
+      { txt: "Abra la app TransMiSITP. Si no la tiene, pídale al tutor que le ayude a instalarla. Es gratuita.", img: { emoji: "🚍", texto: "Pantalla principal de TransMiSITP" } },
       { txt: "Toque <strong>Cerca de mí</strong> para ver las paradas de bus que están cerca de su ubicación actual." },
       { txt: "Toque una parada para ver qué buses llegan allí y a qué horas." },
       { txt: "Si quiere buscar una ruta específica, toque <strong>Rutas</strong> y escriba el número del bus." },
@@ -582,7 +639,7 @@ const lecciones = {
     icono: "📧",
     paraq: "El correo Gmail es como una carta digital. Puede enviar mensajes, fotos y documentos a cualquier persona en el mundo. Es gratis y llega en segundos.",
     pasos: [
-      { txt: "Abra la aplicación Gmail (el ícono de sobre con la M de colores).", img: true },
+      { txt: "Abra la aplicación Gmail (el ícono de sobre con la M de colores).", img: { emoji: "📧", texto: "Bandeja de entrada de Gmail" } },
       { txt: "Aquí verá todos los correos que le han llegado. Los que están en <strong>negrita</strong> son los nuevos que aún no ha leído." },
       { txt: "Para leer un correo, solo tóquelo." },
       { txt: "Para escribir uno nuevo, toque el botón <strong>+ Redactar</strong> (abajo a la derecha con un lápiz ✏️)." },
@@ -596,7 +653,7 @@ const lecciones = {
     icono: "🖼️",
     paraq: "Puede enviarle fotos a su familia por correo. Así ellos guardan las fotos y no se pierden aunque cambie de celular.",
     pasos: [
-      { txt: "Abra Gmail y toque <strong>Redactar</strong> (el lápiz ✏️ abajo a la derecha).", img: true },
+      { txt: "Abra Gmail y toque <strong>Redactar</strong> (el lápiz ✏️ abajo a la derecha).", img: { emoji: "📝", texto: "Pantalla para redactar un correo" } },
       { txt: "En <em>Para:</em> escriba el correo del familiar. En <em>Asunto:</em> escriba algo como: 'Foto de hoy'." },
       { txt: "Toque el ícono de clip 📎 arriba a la derecha." },
       { txt: "Seleccione <strong>Adjuntar archivo</strong> y luego busque la foto en su galería." },
@@ -610,7 +667,7 @@ const lecciones = {
     icono: "☁️",
     paraq: "Google Drive es como una cajita invisible en Internet donde puede guardar sus fotos y documentos. Si se daña o pierde el celular, sus fotos están a salvo en Drive.",
     pasos: [
-      { txt: "Abra Google Drive (el ícono de triángulo de colores 🔺).", img: true },
+      { txt: "Abra Google Drive (el ícono de triángulo de colores 🔺).", img: { emoji: "☁️", texto: "Pantalla principal de Google Drive" } },
       { txt: "Toque el botón <strong>+</strong> abajo a la derecha." },
       { txt: "Seleccione <strong>Subir</strong>." },
       { txt: "Escoja las fotos que quiere guardar desde su galería." },
@@ -624,7 +681,7 @@ const lecciones = {
     icono: "🔁",
     paraq: "Una de las grandes ventajas de Google Drive es que puede ver sus fotos desde el celular de un hijo, nieto o desde cualquier otro celular, sin cable ni memoria USB.",
     pasos: [
-      { txt: "En el celular donde quiere ver sus fotos, abra el navegador (Chrome o cualquiera).", img: true },
+      { txt: "En el celular donde quiere ver sus fotos, abra el navegador (Chrome o cualquiera).", img: { emoji: "🌐", texto: "Navegador abierto en drive.google.com" } },
       { txt: "Escriba en la barra de búsqueda: <strong>drive.google.com</strong> y toque Ir o Enter." },
       { txt: "Ingrese con su correo Gmail y su contraseña." },
       { txt: "Verá todas sus fotos y documentos guardados. Toque cualquiera para verlo." },
@@ -692,7 +749,7 @@ const lecciones = {
     icono: "👮",
     paraq: "Si fue víctima de una estafa o sospecha de un fraude, puede reportarlo a la Policía Nacional desde su celular. No tiene que ir a ninguna estación.",
     pasos: [
-      { txt: "Abra el navegador de su celular y busque: <strong>CAI Virtual Policía Nacional Colombia</strong>.", img: true },
+      { txt: "Abra el navegador de su celular y busque: <strong>CAI Virtual Policía Nacional Colombia</strong>.", img: { emoji: "👮", texto: "Sitio web del CAI Virtual" } },
       { txt: "Ingrese al sitio oficial: <em>caivirtual.policia.gov.co</em>." },
       { txt: "Toque <strong>Denuncias en línea</strong> o <strong>Reportar fraude electrónico</strong>." },
       { txt: "Complete el formulario con la información del fraude: qué pasó, cuándo, qué número le llamó o escribió." },
@@ -743,7 +800,20 @@ function irLeccion(mod, num, ev) {
           <div class="paso-num" style="background:${info.color}">${i+1}</div>
           <div>
             <div class="paso-txt">${p.txt}</div>
-            ${p.img ? `<div class="paso-img"><img src="p.jpg"></div>` : ''}
+            ${p.img ? `
+            <div class="paso-img-card" style="border-color:${info.color};background:${imgFondoPorModulo[mod]}">
+              <div class="paso-img-visual" id="img-visual-${mod}-${num}-${i}" style="width:220px;">
+                <div class="img-emoji" style="font-size:54px;">${p.img.emoji}</div>
+                <div class="img-texto">${p.img.texto}</div>
+              </div>
+              <div class="paso-img-controls">
+                <button class="img-size-btn" style="background:${info.color}" onclick="cambiarTamanoImg('${mod}-${num}-${i}', -30)" aria-label="Reducir imagen">−</button>
+                <input type="range" class="img-size-slider" min="140" max="420" value="220"
+                  oninput="setTamanoImg('${mod}-${num}-${i}', this.value)" aria-label="Ajustar tamaño de la imagen">
+                <button class="img-size-btn" style="background:${info.color}" onclick="cambiarTamanoImg('${mod}-${num}-${i}', 30)" aria-label="Ampliar imagen">+</button>
+                <span class="img-size-label" id="img-size-label-${mod}-${num}-${i}">220px</span>
+              </div>
+            </div>` : ''}
           </div>
         </div>
       `).join('')}
@@ -803,6 +873,28 @@ function actualizarProgresos() {
   });
   // Re-render leccion-contenido si volvemos
   document.getElementById('leccion-contenido').style.display = 'block';
+}
+
+// ---- AJUSTE DE TAMAÑO DE LAS IMÁGENES DE CADA PASO ----
+function setTamanoImg(id, valor) {
+  const el = document.getElementById('img-visual-' + id);
+  if (!el) return;
+  const px = Math.max(140, Math.min(420, parseInt(valor, 10) || 220));
+  el.style.width = px + 'px';
+  const emoji = el.querySelector('.img-emoji');
+  if (emoji) emoji.style.fontSize = Math.round(px * 0.24) + 'px';
+  const lbl = document.getElementById('img-size-label-' + id);
+  if (lbl) lbl.textContent = px + 'px';
+  const wrap = el.closest('.paso-img-card');
+  const slider = wrap ? wrap.querySelector('.img-size-slider') : null;
+  if (slider) slider.value = px;
+}
+
+function cambiarTamanoImg(id, delta) {
+  const el = document.getElementById('img-visual-' + id);
+  if (!el) return;
+  const actual = parseInt(el.style.width, 10) || 220;
+  setTamanoImg(id, actual + delta);
 }
 </script>
 </body>
