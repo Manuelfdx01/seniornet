@@ -265,6 +265,9 @@
     margin-bottom: 8px;
     transition: font-size 0.15s ease;
   }
+  .paso-img-visual img {
+    transition: all 0.15s ease;
+  }
   .paso-img-visual .img-texto {
     font-size: 14px; font-weight: 700;
     color: #3A5A82; text-align: center;
@@ -353,13 +356,11 @@
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="nav-logo"><span>📡</span> SeniorNet</div>
   <button class="nav-btn" onclick="irInicio()">🏠 Inicio</button>
 </nav>
 
-<!-- VISTA: INICIO -->
 <div id="vista-inicio" class="vista activa">
   <div class="hero">
     <div class="hero-icon">👴📱👵</div>
@@ -373,7 +374,6 @@
 
   <div class="grid">
 
-    <!-- Módulo 1 -->
     <div class="card m1" onclick="irModulo(1)">
       <div class="card-header">
         <div class="card-icon">💬</div>
@@ -396,7 +396,6 @@
       </div>
     </div>
 
-    <!-- Módulo 2 -->
     <div class="card m2" onclick="irModulo(2)">
       <div class="card-header">
         <div class="card-icon">🗺️</div>
@@ -418,7 +417,6 @@
       </div>
     </div>
 
-    <!-- Módulo 3 -->
     <div class="card m3" onclick="irModulo(3)">
       <div class="card-header">
         <div class="card-icon">📁</div>
@@ -440,7 +438,6 @@
       </div>
     </div>
 
-    <!-- Módulo 4 -->
     <div class="card m4" onclick="irModulo(4)">
       <div class="card-header">
         <div class="card-icon">🛡️</div>
@@ -466,7 +463,6 @@
   </div>
 </div>
 
-<!-- VISTA: LECCIÓN -->
 <div id="vista-leccion" class="vista">
   <div class="leccion-wrap">
     <button class="leccion-back" onclick="irInicio()">← Volver al inicio</button>
@@ -476,7 +472,6 @@
       <div class="celeb-titulo">¡Muy bien!</div>
       <div class="celeb-sub">Completó esta lección. ¡Siga así!</div>
       
-      <!-- Contenedor dinámico para botones de navegación inteligente -->
       <div id="celebracion-botones"></div>
     </div>
   </div>
@@ -508,13 +503,15 @@ const imgFondoPorModulo = {
 };
 
 // ---- CONTENIDO DE LECCIONES ----
+// NOTA: Para usar imágenes reales en los pasos, agregue la propiedad 'src' indicando la ruta del archivo.
+// Ejemplo: src: "imagenes/audio.jpg" o una URL web. Si 'src' no existe, usará 'emoji' como respaldo.
 const lecciones = {
   "1-1": {
     titulo: "Enviar un audio de voz en WhatsApp",
     icono: "🎙️",
     paraq: "¿Le da pereza escribir? Con los audios de WhatsApp puede hablarle a su familiar como si estuviera al lado. Es muy fácil y no tiene que tocar muchas cosas.",
     pasos: [
-      { txt: "Abra WhatsApp y entre al chat de la persona a quien le quiere hablar.", img: { emoji: "💬", texto: "Chat abierto en WhatsApp" } },
+      { txt: "Abra WhatsApp y entre al chat de la persona a quien le quiere hablar.", img: { src: "imagenes/chat-whatsapp.png", emoji: "💬", texto: "Chat abierto en WhatsApp" } },
       { txt: "Busque el ícono del micrófono 🎤 que está a la derecha, donde normalmente escribe." },
       { txt: "Toque y <strong>mantenga presionado</strong> el micrófono mientras habla. Cuando termine, suelte el dedo." },
       { txt: "El audio se envía solo. La persona lo recibirá y podrá escucharlo cuando quiera." },
@@ -542,7 +539,7 @@ const lecciones = {
     pasos: [
       { txt: "Abra WhatsApp. Toque el ícono de lápiz ✏️ o el botón de nuevo chat (abajo a la derecha).", img: { emoji: "✏️", texto: "Botón de nuevo chat / grupo" } },
       { txt: "Seleccione <strong>Nuevo grupo</strong>." },
-      { txt: "Busque y toque el nombre de cada familiar que quiere añadir. Puede añadir a varios." },
+      { txt: "Busque and toque el nombre de cada familiar que quiere añadir. Puede añadir a varios." },
       { txt: "Toque la flecha → para continuar." },
       { txt: "Escriba el nombre del grupo (por ejemplo: <em>Familia González</em>) y toque el visto ✔." },
       { txt: "¡Listo! Ya puede escribir en el grupo y todos lo verán." },
@@ -557,7 +554,7 @@ const lecciones = {
     pasos: [
       { txt: "<strong>Señal 1:</strong> Le piden su contraseña, número de tarjeta o código. Los bancos NUNCA piden eso por WhatsApp." },
       { txt: "<strong>Señal 2:</strong> El mensaje tiene muchos errores de ortografía o se ve raro." },
-      { txt: "<strong>Señal 3:</strong> Le dicen 'urgente' o 'su cuenta será bloqueada'. Le meten prisa para que no pensemos." },
+      { txt: "<strong>Señal 3:</strong> Le dicen 'urgente' o 'su cuenta será bloqueada'. Le meten prisa para que no pensemu." },
       { txt: "<strong>Señal 4:</strong> Le piden que haga clic en un enlace desconocido." },
       { txt: "Si sospecha: <strong>No toque nada. Borre el mensaje. Llame directamente a su banco o familiar.</strong>" },
     ],
@@ -808,7 +805,11 @@ function irLeccion(mod, num, ev) {
             ${p.img ? `
             <div class="paso-img-card" style="border-color:${info.color};background:${imgFondoPorModulo[mod]}">
               <div class="paso-img-visual" id="img-visual-${mod}-${num}-${i}" style="width:220px;">
-                <div class="img-emoji" style="font-size:54px;">${p.img.emoji}</div>
+                ${p.img.src ? `
+                  <img src="${p.img.src}" alt="${p.img.texto}" style="width:100%; height:auto; display:block; border-radius:8px; margin-bottom:8px;">
+                ` : `
+                  <div class="img-emoji" style="font-size:54px;">${p.img.emoji}</div>
+                `}
                 <div class="img-texto">${p.img.texto}</div>
               </div>
               <div class="paso-img-controls">
@@ -829,27 +830,6 @@ function irLeccion(mod, num, ev) {
     const cls = data.alerta.tipo === 'verde' ? 'alerta-verde' : data.alerta.tipo === 'rojo' ? 'alerta-rojo' : 'alerta-azul';
     const icono = data.alerta.tipo === 'verde' ? '✅' : data.alerta.tipo === 'rojo' ? '🚨' : 'ℹ️';
     html += `<div class="bloque"><div class="alerta ${cls}"><div class="alerta-icon">${icono}</div><div>${data.alerta.txt}</div></div></div>`;
-  }
-
-  // TARJETA INTEGRADA: Detector de Estafas Inteligente (para Módulo 1 Lección 4, y todo el Módulo 4)
-  if (mod === 4 || (mod === 1 && num === 4)) {
-    html += `
-      <div class="bloque" style="border: 3px solid var(--naranja); background: #FFF9F3; margin-bottom: 18px;">
-        <div style="display: flex; gap: 14px; align-items: flex-start;">
-          <div style="font-size: 34px; line-height: 1;">🔍</div>
-          <div>
-            <strong style="color: var(--naranja); font-size: 20px; display: block; margin-bottom: 6px;">¿Tiene un mensaje o captura sospechosa ahora mismo?</strong>
-            <p style="font-size: 17px; margin-bottom: 14px; color: #444; line-height: 1.5;">
-              Si le llegó un mensaje raro a su celular o WhatsApp y tiene miedo de que sea un engaño, puede usar la página gratuita <strong>Bitdefender Scamio</strong>. Allí puede copiar y pegar el texto, o <strong>subir una foto de su pantalla (captura)</strong>, y un asistente inteligente le dirá gratis y al instante si es seguro o una estafa.
-            </p>
-            <a href="https://www.bitdefender.com/es-es/consumer/scamio" target="_blank" rel="noopener"
-               style="display: inline-block; background: var(--naranja); color: white; text-decoration: none; padding: 12px 22px; border-radius: 12px; font-weight: 800; font-size: 17px; transition: 0.2s; box-shadow: 0 4px 10px rgba(224,124,48,0.25); text-align: center;">
-              👉 Tocar aquí para revisar el mensaje en Scamio
-            </a>
-          </div>
-        </div>
-      </div>
-    `;
   }
 
   if (data.ejercicio) {
