@@ -232,8 +232,17 @@
     font-weight: 800; font-size: 16px; flex-shrink: 0; margin-top: 2px;
   }
   .paso-txt { font-size: 18px; line-height: 1.5; }
-  
-  /* Tarjetas de imagen ilustrativa por paso */
+  .paso-img {
+    background: #F0F5FB;
+    border: 2px dashed #B0C8E0;
+    border-radius: 12px;
+    padding: 20px; text-align: center;
+    color: #5577AA; font-size: 15px;
+    margin-top: 8px; font-style: italic;
+  }
+  .paso-img span { font-size: 32px; display: block; margin-bottom: 6px; }
+
+  /* Tarjetas de imagen ilustrativa por paso (diferenciables + tamaño ajustable) */
   .paso-img-card {
     margin-top: 10px;
     display: inline-block;
@@ -251,14 +260,6 @@
     padding: 18px 14px;
     transition: width 0.15s ease;
   }
-  
-  .img-real {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    display: none;
-  }
-
   .paso-img-visual .img-emoji {
     font-size: 54px; line-height: 1;
     margin-bottom: 8px;
@@ -318,7 +319,7 @@
     cursor: pointer; text-align: center;
     transition: 0.2s; margin-top: 8px;
   }
-  .btn-logre:hover { filter: brightness(0.9); transform: scale(1.02); }
+  .btn-logre:hover { background: #1F6B47; transform: scale(1.02); }
   .btn-logre:active { transform: scale(0.98); }
 
   /* Celebración */
@@ -342,6 +343,7 @@
   }
   footer strong { display: block; font-size: 18px; margin-bottom: 4px; }
 
+  /* Responsive */
   @media (max-width: 520px) {
     .card-header { flex-direction: column; gap: 8px; }
     .leccion-header { flex-direction: column; }
@@ -462,7 +464,13 @@
   <div class="leccion-wrap">
     <button class="leccion-back" onclick="irInicio()">← Volver al inicio</button>
     <div id="leccion-contenido"></div>
-    <div class="celebracion" id="celebracion"></div>
+    <div class="celebracion" id="celebracion">
+      <div class="celeb-icon">🎉</div>
+      <div class="celeb-titulo">¡Muy bien!</div>
+      <div class="celeb-sub">Completó esta lección. ¡Siga así!</div>
+      
+      <div id="celebracion-botones"></div>
+    </div>
   </div>
 </div>
 
@@ -483,6 +491,7 @@ const modInfo = {
   4: { nombre: "Protéjase del fraude", icono: "🛡️", color: "var(--rojo)", total: 5 },
 };
 
+// Fondo claro de las tarjetas de imagen por módulo (coherente con el color del módulo)
 const imgFondoPorModulo = {
   1: "#EBF4FB",
   2: "var(--verde-cl)",
@@ -531,7 +540,7 @@ const lecciones = {
       { txt: "¡Listo! Ya puede escribir en el grupo y todos lo verán." },
     ],
     alerta: { tipo: "verde", txt: "Solo añada al grupo personas que usted conozca y de confianza." },
-    ejercicio: "Cree un grupo con el nombre 'Familia' y añada a un familiar. Envíe un saludo de bienvenida.",
+    ejercicio: "Cree un grupo con el nombre 'Familia' and añada a un familiar. Envíe un saludo de bienvenida.",
   },
   "1-4": {
     titulo: "Cómo saber si un mensaje de WhatsApp es falso",
@@ -540,7 +549,7 @@ const lecciones = {
     pasos: [
       { txt: "<strong>Señal 1:</strong> Le piden su contraseña, número de tarjeta o código. Los bancos NUNCA piden eso por WhatsApp." },
       { txt: "<strong>Señal 2:</strong> El mensaje tiene muchos errores de ortografía o se ve raro." },
-      { txt: "<strong>Señal 3:</strong> Le dicen 'urgente' o 'su cuenta será bloqueada'. Le meten prisa para que no piense." },
+      { txt: "<strong>Señal 3:</strong> Le dicen 'urgente' o 'su cuenta será bloqueada'. Le meten prisa para que no pensemu." },
       { txt: "<strong>Señal 4:</strong> Le piden que haga clic en un enlace desconocido." },
       { txt: "Si sospecha: <strong>No toque nada. Borre el mensaje. Llame directamente a su banco o familiar.</strong>" },
     ],
@@ -595,7 +604,7 @@ const lecciones = {
     icono: "📲",
     paraq: "¿Sale solo y su familia quiere saber que está bien? Puede compartir su ubicación en tiempo real por WhatsApp para que siempre sepan dónde está.",
     pasos: [
-      { txt: "Abra WhatsApp y entre al chat del familiar con quien quiere compartir su ubicación.", img: { emoji: "📲", texto: "Compartir ubicación en WhatsApp" } },
+      { txt: "Abra WhatsApp and entre al chat del familiar con quien quiere compartir su ubicación.", img: { emoji: "📲", texto: "Compartir ubicación en WhatsApp" } },
       { txt: "Toque el ícono de clip 📎 (adjuntar) que está al lado de donde escribe." },
       { txt: "Seleccione <strong>Ubicación</strong>." },
       { txt: "Toque <strong>Compartir ubicación en tiempo real</strong>." },
@@ -664,7 +673,7 @@ const lecciones = {
   "3-4": {
     titulo: "Ver mis fotos desde otro celular",
     icono: "🔁",
-    paraq: "Una de las ventajas de Google Drive es que puede ver sus fotos desde el celular de un hijo o nieto, sin cables.",
+    paraq: "Una de las grandes ventajas de Google Drive es que puede ver sus fotos desde el celular de un hijo, nieto o desde cualquier otro celular, sin cable ni memoria USB.",
     pasos: [
       { txt: "En el celular donde quiere ver sus fotos, abra el navegador (Chrome o cualquiera).", img: { emoji: "🌐", texto: "Navegador abierto en drive.google.com" } },
       { txt: "Escriba en la barra de búsqueda: <strong>drive.google.com</strong> y toque Ir o Enter." },
@@ -754,7 +763,7 @@ function irInicio() {
 }
 
 function irModulo(m) {
-  // Solo navega si se hace clic explícito en la lección
+  // Solo navega si click en la tarjeta (no en botón hijo)
 }
 
 function irLeccion(mod, num, ev) {
@@ -768,7 +777,7 @@ function irLeccion(mod, num, ev) {
   document.getElementById('vista-leccion').classList.add('activa');
   document.getElementById('celebracion').classList.remove('activa');
   
-  // ¡AQUÍ ESTÁ LA SOLUCIÓN! Volver a hacer visible el contenido bloqueado
+  // SOLUCIÓN AL BLOQUEO DE PANTALLA: Forzamos a que el contenedor sea visible
   document.getElementById('leccion-contenido').style.display = 'block';
 
   let html = `
@@ -786,21 +795,13 @@ function irLeccion(mod, num, ev) {
       ${data.pasos.map((p, i) => `
         <div class="paso">
           <div class="paso-num" style="background:${info.color}">${i+1}</div>
-          <div style="width: 100%;">
+          <div>
             <div class="paso-txt">${p.txt}</div>
             ${p.img ? `
             <div class="paso-img-card" style="border-color:${info.color};background:${imgFondoPorModulo[mod]}">
               <div class="paso-img-visual" id="img-visual-${mod}-${num}-${i}" style="width:220px;">
-                
-                <div id="fallback-${mod}-${num}-${i}" style="text-align:center;">
-                    <div class="img-emoji" style="font-size:54px;">${p.img.emoji}</div>
-                    <div class="img-texto">${p.img.texto}</div>
-                </div>
-
-                <img class="img-real" src="imagenes/${mod}-${num}.jpg" alt="${p.img.texto}"
-                     onload="this.style.display='block'; document.getElementById('fallback-${mod}-${num}-${i}').style.display='none';"
-                     onerror="this.style.display='none'; document.getElementById('fallback-${mod}-${num}-${i}').style.display='block';">
-
+                <div class="img-emoji" style="font-size:54px;">${p.img.emoji}</div>
+                <div class="img-texto">${p.img.texto}</div>
               </div>
               <div class="paso-img-controls">
                 <button class="img-size-btn" style="background:${info.color}" onclick="cambiarTamanoImg('${mod}-${num}-${i}', -30)" aria-label="Reducir imagen">−</button>
@@ -838,42 +839,56 @@ function irLeccion(mod, num, ev) {
 }
 
 function marcarCompleta(mod, num) {
+  // 1. Guardar la lección como hecha
   completadas[`${mod}-${num}`] = true;
-  document.getElementById('leccion-contenido').style.display = 'none';
-
-  let nextMod = mod;
-  let nextNum = num + 1;
-  let nextKey = `${nextMod}-${nextNum}`;
-
-  if (!lecciones[nextKey]) {
-      nextMod = mod + 1;
-      nextNum = 1;
-      nextKey = `${nextMod}-${nextNum}`;
-  }
-
-  const celebracionDiv = document.getElementById('celebracion');
   
-  let botonesHTML = '';
-  if (lecciones[nextKey]) {
-      botonesHTML += `
-        <button class="btn-logre" style="background:var(--verde); margin-bottom: 12px;" onclick="irLeccion(${nextMod}, ${nextNum})">
-          ⏭️ Siguiente lección
+  // 2. Ocultar el contenido actual de la lección
+  document.getElementById('leccion-contenido').style.display = 'none';
+  
+  // 3. Evaluar navegación inteligente
+  const totalLecciones = modInfo[mod].total;
+  const contenedorBotones = document.getElementById('celebracion-botones');
+  let htmlBotones = '';
+  
+  if (num < totalLecciones) {
+    // Aún quedan clases en este módulo
+    const siguienteLeccion = num + 1;
+    htmlBotones += `
+      <button class="btn-logre" style="background:var(--verde); margin-bottom: 12px;" 
+              onclick="irLeccion(${mod}, ${siguienteLeccion}, event)">
+        ➡️ Siguiente lección
+      </button>
+    `;
+  } else {
+    // Era la última lección del módulo actual. Evaluamos si hay un módulo siguiente
+    const siguienteModulo = mod + 1;
+    if (modInfo[siguienteModulo]) {
+      htmlBotones += `
+        <button class="btn-logre" style="background:var(--naranja); margin-bottom: 12px;" 
+                onclick="irLeccion(${siguienteModulo}, 1, event)">
+          ➡️ Siguiente módulo: ${modInfo[siguienteModulo].nombre}
         </button>
       `;
-  } else {
-      botonesHTML += `<p style="font-size: 18px; color: var(--azul); font-weight: bold; margin-bottom: 12px;">¡Ha completado todo el curso! 🏆</p>`;
+    } else {
+      // Llegó al final de absolutamente todo el curso (Fin del módulo 4)
+      htmlBotones += `
+        <div style="font-weight: 800; color: var(--verde); margin: 15px 0; font-size: 21px;">
+          🏆 ¡Felicitaciones! Ha completado satisfactoriamente todos los módulos de SeniorNet.
+        </div>
+      `;
+    }
   }
-
-  botonesHTML += `<button class="btn-logre" style="background:var(--azul)" onclick="irInicio()">🏠 Volver al menú principal</button>`;
-
-  celebracionDiv.innerHTML = `
-    <div class="celeb-icon">🎉</div>
-    <div class="celeb-titulo">¡Muy bien!</div>
-    <div class="celeb-sub">Completó esta lección. ¡Siga así!</div>
-    ${botonesHTML}
+  
+  // Botón estándar para regresar al inicio siempre disponible
+  htmlBotones += `
+    <button class="btn-logre" style="background:var(--azul)" onclick="irInicio()">
+      🏠 Ver más lecciones
+    </button>
   `;
-
-  celebracionDiv.classList.add('activa');
+  
+  // 4. Inyectar los botones y activar la pantalla de celebración
+  contenedorBotones.innerHTML = htmlBotones;
+  document.getElementById('celebracion').classList.add('activa');
 }
 
 function actualizarProgresos() {
@@ -900,9 +915,11 @@ function actualizarProgresos() {
     if (bar) bar.style.width = pct + '%';
     if (txt) txt.textContent = `${hecho} de ${total} lecciones completadas`;
   });
+  // Re-render leccion-contenido si volvemos
   document.getElementById('leccion-contenido').style.display = 'block';
 }
 
+// ---- AJUSTE DE TAMAÑO DE LAS IMÁGENES DE CADA PASO ----
 function setTamanoImg(id, valor) {
   const el = document.getElementById('img-visual-' + id);
   if (!el) return;
