@@ -252,12 +252,11 @@
     transition: width 0.15s ease;
   }
   
-  /* ESTILOS NUEVOS PARA IMAGEN REAL */
   .img-real {
     width: 100%;
     height: auto;
     border-radius: 8px;
-    display: none; /* Se mantiene oculta hasta que carga con éxito */
+    display: none;
   }
 
   .paso-img-visual .img-emoji {
@@ -343,7 +342,6 @@
   }
   footer strong { display: block; font-size: 18px; margin-bottom: 4px; }
 
-  /* Responsive */
   @media (max-width: 520px) {
     .card-header { flex-direction: column; gap: 8px; }
     .leccion-header { flex-direction: column; }
@@ -464,8 +462,7 @@
   <div class="leccion-wrap">
     <button class="leccion-back" onclick="irInicio()">← Volver al inicio</button>
     <div id="leccion-contenido"></div>
-    <div class="celebracion" id="celebracion">
-      </div>
+    <div class="celebracion" id="celebracion"></div>
   </div>
 </div>
 
@@ -486,7 +483,6 @@ const modInfo = {
   4: { nombre: "Protéjase del fraude", icono: "🛡️", color: "var(--rojo)", total: 5 },
 };
 
-// Fondo claro de las tarjetas de imagen por módulo (coherente con el color del módulo)
 const imgFondoPorModulo = {
   1: "#EBF4FB",
   2: "var(--verde-cl)",
@@ -758,7 +754,7 @@ function irInicio() {
 }
 
 function irModulo(m) {
-  // Solo navega si click en la tarjeta (no en botón hijo)
+  // Solo navega si se hace clic explícito en la lección
 }
 
 function irLeccion(mod, num, ev) {
@@ -771,6 +767,9 @@ function irLeccion(mod, num, ev) {
   document.getElementById('vista-inicio').classList.remove('activa');
   document.getElementById('vista-leccion').classList.add('activa');
   document.getElementById('celebracion').classList.remove('activa');
+  
+  // ¡AQUÍ ESTÁ LA SOLUCIÓN! Volver a hacer visible el contenido bloqueado
+  document.getElementById('leccion-contenido').style.display = 'block';
 
   let html = `
     <div class="leccion-header">
@@ -842,35 +841,29 @@ function marcarCompleta(mod, num) {
   completadas[`${mod}-${num}`] = true;
   document.getElementById('leccion-contenido').style.display = 'none';
 
-  // Lógica para descubrir la siguiente lección
   let nextMod = mod;
   let nextNum = num + 1;
   let nextKey = `${nextMod}-${nextNum}`;
 
-  // Si no existe la lección siguiente en el mismo módulo, busca en el siguiente módulo
   if (!lecciones[nextKey]) {
       nextMod = mod + 1;
       nextNum = 1;
       nextKey = `${nextMod}-${nextNum}`;
   }
 
-  // Generamos los botones dinámicamente según si hay o no una siguiente lección
   const celebracionDiv = document.getElementById('celebracion');
   
   let botonesHTML = '';
   if (lecciones[nextKey]) {
-      // Si hay una siguiente lección, mostramos el botón verde para ir a ella
       botonesHTML += `
         <button class="btn-logre" style="background:var(--verde); margin-bottom: 12px;" onclick="irLeccion(${nextMod}, ${nextNum})">
           ⏭️ Siguiente lección
         </button>
       `;
   } else {
-      // Si ya no hay más lecciones (terminó todo), mostramos un mensaje extra
       botonesHTML += `<p style="font-size: 18px; color: var(--azul); font-weight: bold; margin-bottom: 12px;">¡Ha completado todo el curso! 🏆</p>`;
   }
 
-  // Siempre mostramos el botón de volver al menú
   botonesHTML += `<button class="btn-logre" style="background:var(--azul)" onclick="irInicio()">🏠 Volver al menú principal</button>`;
 
   celebracionDiv.innerHTML = `
@@ -907,11 +900,9 @@ function actualizarProgresos() {
     if (bar) bar.style.width = pct + '%';
     if (txt) txt.textContent = `${hecho} de ${total} lecciones completadas`;
   });
-  // Re-render leccion-contenido si volvemos
   document.getElementById('leccion-contenido').style.display = 'block';
 }
 
-// ---- AJUSTE DE TAMAÑO DE LAS IMÁGENES DE CADA PASO ----
 function setTamanoImg(id, valor) {
   const el = document.getElementById('img-visual-' + id);
   if (!el) return;
