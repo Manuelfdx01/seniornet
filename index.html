@@ -232,17 +232,8 @@
     font-weight: 800; font-size: 16px; flex-shrink: 0; margin-top: 2px;
   }
   .paso-txt { font-size: 18px; line-height: 1.5; }
-  .paso-img {
-    background: #F0F5FB;
-    border: 2px dashed #B0C8E0;
-    border-radius: 12px;
-    padding: 20px; text-align: center;
-    color: #5577AA; font-size: 15px;
-    margin-top: 8px; font-style: italic;
-  }
-  .paso-img span { font-size: 32px; display: block; margin-bottom: 6px; }
-
-  /* Tarjetas de imagen ilustrativa por paso (diferenciables + tamaño ajustable) */
+  
+  /* Tarjetas de imagen ilustrativa por paso */
   .paso-img-card {
     margin-top: 10px;
     display: inline-block;
@@ -260,6 +251,15 @@
     padding: 18px 14px;
     transition: width 0.15s ease;
   }
+  
+  /* ESTILOS NUEVOS PARA IMAGEN REAL */
+  .img-real {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    display: none; /* Se mantiene oculta hasta que carga con éxito */
+  }
+
   .paso-img-visual .img-emoji {
     font-size: 54px; line-height: 1;
     margin-bottom: 8px;
@@ -319,7 +319,7 @@
     cursor: pointer; text-align: center;
     transition: 0.2s; margin-top: 8px;
   }
-  .btn-logre:hover { background: #1F6B47; transform: scale(1.02); }
+  .btn-logre:hover { filter: brightness(0.9); transform: scale(1.02); }
   .btn-logre:active { transform: scale(0.98); }
 
   /* Celebración */
@@ -353,13 +353,11 @@
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="nav-logo"><span>📡</span> SeniorNet</div>
   <button class="nav-btn" onclick="irInicio()">🏠 Inicio</button>
 </nav>
 
-<!-- VISTA: INICIO -->
 <div id="vista-inicio" class="vista activa">
   <div class="hero">
     <div class="hero-icon">👴📱👵</div>
@@ -373,7 +371,6 @@
 
   <div class="grid">
 
-    <!-- Módulo 1 -->
     <div class="card m1" onclick="irModulo(1)">
       <div class="card-header">
         <div class="card-icon">💬</div>
@@ -396,7 +393,6 @@
       </div>
     </div>
 
-    <!-- Módulo 2 -->
     <div class="card m2" onclick="irModulo(2)">
       <div class="card-header">
         <div class="card-icon">🗺️</div>
@@ -418,7 +414,6 @@
       </div>
     </div>
 
-    <!-- Módulo 3 -->
     <div class="card m3" onclick="irModulo(3)">
       <div class="card-header">
         <div class="card-icon">📁</div>
@@ -440,7 +435,6 @@
       </div>
     </div>
 
-    <!-- Módulo 4 -->
     <div class="card m4" onclick="irModulo(4)">
       <div class="card-header">
         <div class="card-icon">🛡️</div>
@@ -466,17 +460,12 @@
   </div>
 </div>
 
-<!-- VISTA: LECCIÓN -->
 <div id="vista-leccion" class="vista">
   <div class="leccion-wrap">
     <button class="leccion-back" onclick="irInicio()">← Volver al inicio</button>
     <div id="leccion-contenido"></div>
     <div class="celebracion" id="celebracion">
-      <div class="celeb-icon">🎉</div>
-      <div class="celeb-titulo">¡Muy bien!</div>
-      <div class="celeb-sub">Completó esta lección. ¡Siga así!</div>
-      <button class="btn-logre" style="background:var(--azul)" onclick="irInicio()">🏠 Ver más lecciones</button>
-    </div>
+      </div>
   </div>
 </div>
 
@@ -679,7 +668,7 @@ const lecciones = {
   "3-4": {
     titulo: "Ver mis fotos desde otro celular",
     icono: "🔁",
-    paraq: "Una de las grandes ventajas de Google Drive es que puede ver sus fotos desde el celular de un hijo, nieto o desde cualquier otro celular, sin cable ni memoria USB.",
+    paraq: "Una de las ventajas de Google Drive es que puede ver sus fotos desde el celular de un hijo o nieto, sin cables.",
     pasos: [
       { txt: "En el celular donde quiere ver sus fotos, abra el navegador (Chrome o cualquiera).", img: { emoji: "🌐", texto: "Navegador abierto en drive.google.com" } },
       { txt: "Escriba en la barra de búsqueda: <strong>drive.google.com</strong> y toque Ir o Enter." },
@@ -798,13 +787,21 @@ function irLeccion(mod, num, ev) {
       ${data.pasos.map((p, i) => `
         <div class="paso">
           <div class="paso-num" style="background:${info.color}">${i+1}</div>
-          <div>
+          <div style="width: 100%;">
             <div class="paso-txt">${p.txt}</div>
             ${p.img ? `
             <div class="paso-img-card" style="border-color:${info.color};background:${imgFondoPorModulo[mod]}">
               <div class="paso-img-visual" id="img-visual-${mod}-${num}-${i}" style="width:220px;">
-                <div class="img-emoji" style="font-size:54px;">${p.img.emoji}</div>
-                <div class="img-texto">${p.img.texto}</div>
+                
+                <div id="fallback-${mod}-${num}-${i}" style="text-align:center;">
+                    <div class="img-emoji" style="font-size:54px;">${p.img.emoji}</div>
+                    <div class="img-texto">${p.img.texto}</div>
+                </div>
+
+                <img class="img-real" src="imagenes/${mod}-${num}.jpg" alt="${p.img.texto}"
+                     onload="this.style.display='block'; document.getElementById('fallback-${mod}-${num}-${i}').style.display='none';"
+                     onerror="this.style.display='none'; document.getElementById('fallback-${mod}-${num}-${i}').style.display='block';">
+
               </div>
               <div class="paso-img-controls">
                 <button class="img-size-btn" style="background:${info.color}" onclick="cambiarTamanoImg('${mod}-${num}-${i}', -30)" aria-label="Reducir imagen">−</button>
@@ -844,7 +841,46 @@ function irLeccion(mod, num, ev) {
 function marcarCompleta(mod, num) {
   completadas[`${mod}-${num}`] = true;
   document.getElementById('leccion-contenido').style.display = 'none';
-  document.getElementById('celebracion').classList.add('activa');
+
+  // Lógica para descubrir la siguiente lección
+  let nextMod = mod;
+  let nextNum = num + 1;
+  let nextKey = `${nextMod}-${nextNum}`;
+
+  // Si no existe la lección siguiente en el mismo módulo, busca en el siguiente módulo
+  if (!lecciones[nextKey]) {
+      nextMod = mod + 1;
+      nextNum = 1;
+      nextKey = `${nextMod}-${nextNum}`;
+  }
+
+  // Generamos los botones dinámicamente según si hay o no una siguiente lección
+  const celebracionDiv = document.getElementById('celebracion');
+  
+  let botonesHTML = '';
+  if (lecciones[nextKey]) {
+      // Si hay una siguiente lección, mostramos el botón verde para ir a ella
+      botonesHTML += `
+        <button class="btn-logre" style="background:var(--verde); margin-bottom: 12px;" onclick="irLeccion(${nextMod}, ${nextNum})">
+          ⏭️ Siguiente lección
+        </button>
+      `;
+  } else {
+      // Si ya no hay más lecciones (terminó todo), mostramos un mensaje extra
+      botonesHTML += `<p style="font-size: 18px; color: var(--azul); font-weight: bold; margin-bottom: 12px;">¡Ha completado todo el curso! 🏆</p>`;
+  }
+
+  // Siempre mostramos el botón de volver al menú
+  botonesHTML += `<button class="btn-logre" style="background:var(--azul)" onclick="irInicio()">🏠 Volver al menú principal</button>`;
+
+  celebracionDiv.innerHTML = `
+    <div class="celeb-icon">🎉</div>
+    <div class="celeb-titulo">¡Muy bien!</div>
+    <div class="celeb-sub">Completó esta lección. ¡Siga así!</div>
+    ${botonesHTML}
+  `;
+
+  celebracionDiv.classList.add('activa');
 }
 
 function actualizarProgresos() {
